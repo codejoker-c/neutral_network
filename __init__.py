@@ -33,6 +33,11 @@ if __name__ == '__main__':
     num_classes = 10
     reg = 1e-5
     model = TwoLayerNet(hidden_dim=hidden_dim, num_classes=num_classes, reg=reg)
-    optim_config = {"learning_rate": 1e-3, "num_echos": 10}
+    optim_config = {"learning_rate": 1e-3, "num_echos": 50}
     solver = Solver(model, data, optim_config=optim_config)
     solver.train()
+
+    with open('model\model.pickle','wb') as file:
+        pickle.dump(model,file)
+
+

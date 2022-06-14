@@ -7,6 +7,7 @@ import numpy as np
 
 from utils import optim
 
+
 class Solver(object):
 
     def __init__(self, model, data, **kwargs):
@@ -17,7 +18,7 @@ class Solver(object):
         self.X_val = data["X_val"]
         self.y_val = data["y_val"]
 
-        self.update_rule = kwargs.pop("update_rule", "sgd") # 如果kwargs中没有update_rule，则返回sgd
+        self.update_rule = kwargs.pop("update_rule", "sgd")  # 如果kwargs中没有update_rule，则返回sgd
         self.optim_config = kwargs.pop("optim_config", {})
         self.lr_decay = kwargs.pop("lr_decay", 1.0)
         self.batch_size = kwargs.pop("batch_size", 100)
@@ -32,7 +33,6 @@ class Solver(object):
         if len(kwargs) > 0:
             extra = ", ".join('"%s"' % k for k in list(kwargs.keys()))
             raise ValueError("Unrecognized arguments %s" % extra)
-
 
         if not hasattr(optim, self.update_rule):
             raise ValueError('Invalid update_rule "%s"' % self.update_rule)
@@ -108,6 +108,7 @@ class Solver(object):
             start = i * batch_size
             end = (i + 1) * batch_size
             scores = self.model.loss(X[start:end])
+
             y_pred.append(np.argmax(scores, axis=1))
         y_pred = np.hstack(y_pred)
         acc = np.mean(y_pred == y)
