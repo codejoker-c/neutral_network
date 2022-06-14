@@ -30,4 +30,4 @@ if __name__ == '__main__':
     X_train, y_train, X_test, y_test = load_CIFAR10(cifar10_dir)
 
     # output_img(X_train,y_train)
-    svm_test(X_train, y_train, X_test, y_test, learning_rate=1e-7, reg=2.5e4, num_iters=1500, verbose=True)
+    softmax_test(X_train, y_train, X_test, y_test, learning_rate=1e-7, reg=2.5e4, num_iters=1500, verbose=True)

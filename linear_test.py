@@ -1,8 +1,9 @@
-from classifiers import LinearSVM,Softmax
+from classifiers import LinearSVM, Softmax
 import numpy as np
 import matplotlib.pyplot as plt
 from utils.gradient_check import grad_check_sparse
 from classifiers.linear_svm import svm_loss
+from classifiers.softmax import softmax_loss
 
 
 def svm_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5, num_iters=100, batch_size=200,
@@ -65,8 +66,6 @@ def svm_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5, num
     # print(X_test.shape)
     # print(X_dev.shape)
 
-
-
     # """
     # check gradient
     # """
@@ -84,7 +83,7 @@ def svm_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5, num
     分类
     """
     svm = LinearSVM()
-    loss_history = svm.train(X_train,y_train,learning_rate,reg,num_iters,batch_size,verbose)
+    loss_history = svm.train(X_train, y_train, learning_rate, reg, num_iters, batch_size, verbose)
 
     # 画出loss变化
     plt.plot(loss_history)
@@ -97,9 +96,12 @@ def svm_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5, num
     y_val_pred = svm.predict(X_val)
     print('validation accuracy: %f' % (np.mean(y_val == y_val_pred),))
 
+    y_test_pred = svm.predict(X_test)
+    print('test accuracy: %f' % (np.mean(y_test == y_test_pred)))
+
 
 def softmax_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5, num_iters=100, batch_size=200,
-             verbose=False):
+                 verbose=False):
     """
     数据预处理
     """
@@ -158,34 +160,32 @@ def softmax_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5,
     # print(X_test.shape)
     # print(X_dev.shape)
 
+    """
+    check gradient
+    """
+    W = np.random.randn(3073, 10) * 0.0001
+    loss, grad = softmax_loss(W, X_dev, y_dev, 0.0)
 
+    f = lambda w: svm_loss(w, X_dev, y_dev, 0.0)[0]  # 根据权值计算loss的lambda表达式
+    grad_numerical = grad_check_sparse(f, W, grad)
+
+    loss, grad = softmax_loss(W, X_dev, y_dev, 5e1)
+    f = lambda w: softmax_loss(w, X_dev, y_dev, 5e1)[0]
+    grad_numerical = grad_check_sparse(f, W, grad)
 
     # """
-    # check gradient
+    # 分类
     # """
-    # W = np.random.randn(3073, 10) * 0.0001
-    # loss, grad = svm_loss(W, X_dev, y_dev, 0.0)
+    # softmax = Softmax()
+    # loss_history = softmax.train(X_train, y_train, learning_rate, reg, num_iters, batch_size, verbose)
     #
-    # f = lambda w: svm_loss(w, X_dev, y_dev, 0.0)[0]  # 根据权值计算loss的lambda表达式
-    # grad_numerical = grad_check_sparse(f, W, grad)
+    # # 画出loss变化
+    # plt.plot(loss_history)
+    # plt.xlabel('Iteration number')
+    # plt.ylabel('Loss value')
+    # plt.show()
     #
-    # loss, grad = svm_loss(W, X_dev, y_dev, 5e1)
-    # f = lambda w: svm_loss(w, X_dev, y_dev, 5e1)[0]
-    # grad_numerical = grad_check_sparse(f, W, grad)
-
-    """
-    分类
-    """
-    softmax = Softmax()
-    loss_history = softmax.train(X_train,y_train,learning_rate,reg,num_iters,batch_size,verbose)
-
-    # 画出loss变化
-    plt.plot(loss_history)
-    plt.xlabel('Iteration number')
-    plt.ylabel('Loss value')
-    plt.show()
-
-    y_train_pred = softmax.predict(X_train)
-    print('training accuracy: %f' % (np.mean(y_train == y_train_pred),))
-    y_val_pred = softmax.predict(X_val)
-    print('validation accuracy: %f' % (np.mean(y_val == y_val_pred),))
+    # y_train_pred = softmax.predict(X_train)
+    # print('training accuracy: %f' % (np.mean(y_train == y_train_pred),))
+    # y_val_pred = softmax.predict(X_val)
+    # print('validation accuracy: %f' % (np.mean(y_val == y_val_pred),))
