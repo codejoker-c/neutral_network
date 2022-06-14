@@ -53,7 +53,7 @@ def get_CIFAR10_data(
     """
     # Load the raw CIFAR-10 data
     cifar10_dir = os.path.join(
-        os.path.dirname(__file__), "datasets/cifar-10-batches-py"
+        os.path.dirname(__file__), "../datasets/cifar-10-batches-py"
     )
     X_train, y_train, X_test, y_test = load_CIFAR10(cifar10_dir)
 
@@ -110,7 +110,7 @@ def load_tiny_imagenet(path, dtype=np.float32, subtract_mean=True):
     - X_val: (N_val, 3, 64, 64) array of validation images
     - y_val: (N_val,) array of validation labels
     - X_test: (N_test, 3, 64, 64) array of testing images.
-    - y_test: (N_test,) array of test labels; if test labels are not available
+    - y_test: (N_test,) array of test_file labels; if test_file labels are not available
       (such as in student code) then y_test will be None.
     - mean_image: (3, 64, 64) array giving mean training image
     """
@@ -174,20 +174,20 @@ def load_tiny_imagenet(path, dtype=np.float32, subtract_mean=True):
                 img.shape = (64, 64, 1)
             X_val[i] = img.transpose(2, 0, 1)
 
-    # Next load test images
-    # Students won't have test labels, so we need to iterate over files in the
+    # Next load test_file images
+    # Students won't have test_file labels, so we need to iterate over files in the
     # images directory.
-    img_files = os.listdir(os.path.join(path, "test", "images"))
+    img_files = os.listdir(os.path.join(path, "test_file", "images"))
     X_test = np.zeros((len(img_files), 3, 64, 64), dtype=dtype)
     for i, img_file in enumerate(img_files):
-        img_file = os.path.join(path, "test", "images", img_file)
+        img_file = os.path.join(path, "test_file", "images", img_file)
         img = imread(img_file)
         if img.ndim == 2:
             img.shape = (64, 64, 1)
         X_test[i] = img.transpose(2, 0, 1)
 
     y_test = None
-    y_test_file = os.path.join(path, "test", "test_annotations.txt")
+    y_test_file = os.path.join(path, "test_file", "test_annotations.txt")
     if os.path.isfile(y_test_file):
         with open(y_test_file, "r") as f:
             img_file_to_wnid = {}

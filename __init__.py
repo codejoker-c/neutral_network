@@ -1,8 +1,7 @@
-from KNN_test import KNN_test
-from utils.data_utils import load_CIFAR10
+from utils.data_utils import get_CIFAR10_data
+from classifiers.fc_net import *
+from utils.solver import *
 import matplotlib.pyplot as plt
-import numpy as np
-from linear_test import *
 
 
 def output_img(X_train, y_train):
@@ -26,8 +25,14 @@ def output_img(X_train, y_train):
 分类器分类
 """
 if __name__ == '__main__':
-    cifar10_dir = 'datasets/cifar-10-batches-py'
-    X_train, y_train, X_test, y_test = load_CIFAR10(cifar10_dir)
+    data = get_CIFAR10_data()
+    for k, v in data.items():
+        print("%s :" % k, v.shape)
 
-    # output_img(X_train,y_train)
-    softmax_test(X_train, y_train, X_test, y_test, learning_rate=1e-7, reg=2.5e4, num_iters=1500, verbose=True)
+    hidden_dim = 100
+    num_classes = 10
+    reg = 1e-5
+    model = TwoLayerNet(hidden_dim=hidden_dim, num_classes=num_classes, reg=reg)
+    optim_config = {"learning_rate": 1e-3, "num_echos": 10}
+    solver = Solver(model, data, optim_config=optim_config)
+    solver.train()

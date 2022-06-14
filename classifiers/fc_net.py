@@ -1,8 +1,8 @@
 from builtins import object
 import numpy as np
 
-from ..utils.layers_utils import *
-from ..utils.layers import *
+from utils.layers_utils import *
+from utils.layers import *
 
 class TwoLayerNet(object):
 
@@ -18,78 +18,23 @@ class TwoLayerNet(object):
         self.params = {}
         self.reg = reg
 
-        ############################################################################
-        # TODO: Initialize the weights and biases of the two-layer net. Weights    #
-        # should be initialized from a Gaussian centered at 0.0 with               #
-        # standard deviation equal to weight_scale, and biases should be           #
-        # initialized to zero. All weights and biases should be stored in the      #
-        # dictionary self.params, with first layer weights                         #
-        # and biases using the keys 'W1' and 'b1' and second layer                 #
-        # weights and biases using the keys 'W2' and 'b2'.                         #
-        ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
         self.params['W1'] = np.random.randn(input_dim, hidden_dim) * weight_scale
         self.params['W2'] = np.random.randn(hidden_dim, num_classes) * weight_scale
         self.params['b1'] = np.zeros(hidden_dim)
         self.params['b2'] = np.zeros(num_classes)
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
 
     def loss(self, X, y=None):
-        """
-        Compute loss and gradient for a minibatch of data.
 
-        Inputs:
-        - X: Array of input data of shape (N, d_1, ..., d_k)
-        - y: Array of labels, of shape (N,). y[i] gives the label for X[i].
-
-        Returns:
-        If y is None, then run a test-time forward pass of the model and return:
-        - scores: Array of shape (N, C) giving classification scores, where
-          scores[i, c] is the classification score for X[i] and class c.
-
-        If y is not None, then run a training-time forward and backward pass and
-        return a tuple of:
-        - loss: Scalar value giving the loss
-        - grads: Dictionary with the same keys as self.params, mapping parameter
-          names to gradients of the loss with respect to those parameters.
-        """
         scores = None
-        ############################################################################
-        # TODO: Implement the forward pass for the two-layer net, computing the    #
-        # class scores for X and storing them in the scores variable.              #
-        ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
         out1, cache1 = affine_relu_forward(X, self.params['W1'], self.params['b1'])
         scores, cache2 = affine_forward(out1, self.params['W2'], self.params['b2'])
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
-
-        # If y is None then we are in test mode so just return scores
         if y is None:
             return scores
 
         loss, grads = 0, {}
-        ############################################################################
-        # TODO: Implement the backward pass for the two-layer net. Store the loss  #
-        # in the loss variable and gradients in the grads dictionary. Compute data #
-        # loss using softmax, and make sure that grads[k] holds the gradients for  #
-        # self.params[k]. Don't forget to add L2 regularization!                   #
-        #                                                                          #
-        # NOTE: To ensure that your implementation matches ours and you pass the   #
-        # automated tests, make sure that your L2 regularization includes a factor #
-        # of 0.5 to simplify the expression for the gradient.                      #
-        ############################################################################
-        # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
         loss, dscores = softmax_loss(scores, y)
         loss += 0.5 * self.reg * (
                     np.sum(self.params['W2'] * self.params['W2']) + np.sum(self.params['W1'] * self.params['W1']))
@@ -101,9 +46,5 @@ class TwoLayerNet(object):
         grads['W1'] = dW1 + 0.5 * self.reg * 2 * self.params['W1']
         grads['b1'] = db1
 
-        # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-        ############################################################################
-        #                             END OF YOUR CODE                             #
-        ############################################################################
-
         return loss, grads
+

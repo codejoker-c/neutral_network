@@ -97,7 +97,7 @@ def svm_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5, num
     print('validation accuracy: %f' % (np.mean(y_val == y_val_pred),))
 
     y_test_pred = svm.predict(X_test)
-    print('test accuracy: %f' % (np.mean(y_test == y_test_pred)))
+    print('test_file accuracy: %f' % (np.mean(y_test == y_test_pred)))
 
 
 def softmax_test(X_train, y_train, X_test, y_test, learning_rate=1e-3, reg=1e-5, num_iters=100, batch_size=200,
